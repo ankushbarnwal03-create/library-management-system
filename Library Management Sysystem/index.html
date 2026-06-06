@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Library Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background: darkgreen;
+    }
+
+    .search {
+      margin: 15px 0;
+    }
+
+    .book {
+      background: #eee;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete {
+      background: red;
+      padding: 5px 10px;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Library Management System</h1>
+
+  <input type="text" id="title" placeholder="Book Title">
+  <input type="text" id="author" placeholder="Author Name">
+  <button onclick="addBook()">Add Book</button>
+
+  <input class="search" type="text" id="search" placeholder="Search books..." onkeyup="renderBooks()">
+
+  <div id="bookList"></div>
+</div>
+
+<script>
+  let books = [];
+
+  function addBook() {
+    let title = document.getElementById("title").value;
+    let author = document.getElementById("author").value;
+
+    if (title === "" || author === "") return;
+
+    books.push({
+      id: Date.now(),
+      title,
+      author
+    });
+
+    document.getElementById("title").value = "";
+    document.getElementById("author").value = "";
+
+    renderBooks();
+  }
+
+  function deleteBook(id) {
+    books = books.filter(book => book.id !== id);
+    renderBooks();
+  }
+
+  function renderBooks() {
+    let list = document.getElementById("bookList");
+    let search = document.getElementById("search").value.toLowerCase();
+
+    list.innerHTML = "";
+
+    let filtered = books.filter(b =>
+      b.title.toLowerCase().includes(search) ||
+      b.author.toLowerCase().includes(search)
+    );
+
+    if (filtered.length === 0) {
+      list.innerHTML = "<p>No books found</p>";
+      return;
+    }
+
+    filtered.forEach(book => {
+      list.innerHTML += `
+        <div class="book">
+          <div>
+            <b>${book.title}</b><br>
+            <small>${book.author}</small>
+          </div>
+          <button class="delete" onclick="deleteBook(${book.id})">Delete</button>
+        </div>
+      `;
+    });
+  }
+</script>
+
+</body>
+</html>
